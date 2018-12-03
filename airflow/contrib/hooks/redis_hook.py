@@ -83,6 +83,12 @@ class RedisHook(BaseHook, LoggingMixin):
 
         return self.client
 
+    def ping(self):
+        """
+        Pings Redis cluster
+        """
+        return self.get_conn().ping()
+
     def key_exists(self, key):
         """
         Checks if a key exists in Redis database
@@ -91,3 +97,53 @@ class RedisHook(BaseHook, LoggingMixin):
         :type key: str
         """
         return self.get_conn().exists(key)
+    
+    def get_value(self, key):
+        """
+        Get value of a key exists in Redis database
+        :param key: The key to check the existence.
+        :type key: str
+        """
+        return self.get_conn().get(key)
+
+    def get_keys(self, pattern='*'):
+        """
+        Get keys in Redis database matching a pattern
+        :param pattern: The key pattern to search for.
+        :type pattern: str
+        """
+        return self.get_conn().keys(pattern)
+
+    def set_key(self, key, value, ex=None, px=None, nx=False, xx=False):
+        """
+        Set value of key in Redis database
+        :param key: The key
+        :type key: str
+        :param value: The value
+        :type value: str
+        :param ex: sets an expire flag on key for ex seconds.
+        :type ex: int
+        :param px: sets an expire flag on key for px milliseconds.
+        :type px: int
+        :param nx: if set to True, set the value at key to value only if it does not exist.
+        :type nx: bool
+        :param xx: if set to True, set the value at key to value only if it already exists.
+        :type xx: bool
+        """
+        return self.get_conn().set(key, value, ex, px, nx, xx)
+
+    def ttl(self, key):
+        """
+        Get ttl of a key in Redis database
+        :param key: The key to check the ttl of.
+        :type key: str
+        """
+        return self.get_conn().ttl(key)
+
+    def delete(self, *keys):
+        """
+        Delete keys in Redis database
+        :param keys: The keys to delete.
+        :type keys: list
+        """
+        return self.get_conn().delete(*keys)
